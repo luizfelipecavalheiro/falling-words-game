@@ -1,112 +1,19 @@
-// l123b - t2
-// programa para digitar palavras dentro do limite de tempo
-// Luiz Felipe Cavalheiro dos Santos
-// 2023-11-11
+/**
+ * @file funcoes.c
+ * 
+ * @brief Implementação das funções para o jogo de digitação.
+ * 
+ * @author Luiz Felipe Cavalheiro
+ */
 
-// Para rodar o jogo, digite: gcc l1-t2-luiz.c tecla.c tela.c -o l1-t2-luiz -lm && ./l1-t2-luiz
+#include "funcoes.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-#include <string.h>
-#include "tecla.h"
-#include "tela.h"
-
-// definições de constantes
-// quantas letras gerar
-#define N_LETRA 16
-// quantas palavras gerar
-#define N_PALAVRAS 10
-// quantos segundos para digitar
-#define TEMPO 3 * N_PALAVRAS
-// quantidade de jogadores no hall da fama
-#define MAX_JOGADORES 3
-
-// definições de structs
-typedef struct {
-  char palavra[N_LETRA];
-  int pos_horizontal;
-  int hora_ativacao;
-  int tempo_digitacao;
-
-}Palavra;
-
-typedef struct {
-  char nome[50];
-  int pontos;
-}Jogador;
-
-// definições de funções
-// retorna true se encontrou a letra
-bool acha_letra(Palavra *palavras, int p_sel, char letra);
-// remove a letra digitada
-void remove_pos(Palavra *palavras, int p_sel);
-// seleciona uma palavra das palavras
-int seleciona_palavra(Palavra *palavras, int n_palavras, char l, double inicio);
-// remove a palavra selecionada após ela ser totalmente digitada
-void remove_palavra(Palavra *palavras, int p_sel);
-// verifica se ja foi digitado todas as letras da palavra selecionada
-bool palavra_selecionada_terminou(Palavra *palavras,int p_sel);
-// verifica se caractere é valido
-bool caractere_valido(char l);
-// transforma caractere maiusculo em minusculo caso seja necessario
-char converte_caractere(char l);
-// verifica se numero esta no vetor
-bool numero_jah_sorteado(int num, int vet[N_PALAVRAS]);
-// apresenta o jogo
-void apresentacao();
-// faz o encerramento do jogo
-void encerramento(int n_palavras, int pontos);
-// executa uma partida
-void jogo();
-// verifica a vontade do jogador
-bool quer_jogar_de_novo();
-// sorteia palavras do arquivo
-void preenche_palavras(Palavra *palavras);
-// define posicao horizontal das palavras
-void preenche_pos_horizontal(Palavra *palavras);
-// define hora de ativacao das palavras
-void preenche_hora_ativacao(Palavra *palavras);
-// define tempo para digitacao das palavras
-void preenche_tempo_digitacao(Palavra *palavras);
-// limpa a linha de entrada
-void espera_enter();
-// lê uma tecla, vê se é a correta e age de acordo
-void processa_entrada(Palavra *palavras, int *p_selecionada, int *n_palavras, int *pontos, double inicio, double *tempo_ultima_letra);
-// mostra o estado do programa para o usuário 
-void desenha_tela(Palavra *palavras, int n_palavra, int p_selecionada, int pontos, double inicio);
-// retorna tamanho da palavra
-int tam_palavra(char palavra[N_LETRA]);
-// verifica se tempo de digitacao da palavra expirou
-bool tempo_digitacao_expirou(Palavra *palavras, double inicio, int n_palavra);
-// le recordes do jogo e armazena jogador e pontuacao
-void le_recordes(Jogador* jogadores, int *num_jogadores);
-// atualiza os recordes do jogo
-void atualiza_recordes(Jogador* jogadores, int num_jogadores, int pontos);
-// mostra recordes do jogo na tela
-void mostra_recordes();
-// verifica se pontuacao é uma das 3 maiores
-bool pontuacao_top3(Jogador* jogadores, int num_jogadores, int pontos);
-
-
-int main()
-{
-  // inicializa o gerador de números aleatórios
-  srand(time(0));
-
-	tela_ini();
-	tecla_ini();
-
-  do {
-    apresentacao();
-    jogo();
-  } while (quer_jogar_de_novo());
-
-  tecla_fim();
-	tela_fim();
-}
-
+/**
+ * @brief Executa uma partida do jogo de digitação.
+ *
+ * Esta função contém a lógica principal do jogo, incluindo a inicialização, processamento
+ * da entrada do jogador, atualização da tela e encerramento.
+ */
 void jogo()
 {
   int n_palavras = N_PALAVRAS;
@@ -150,6 +57,11 @@ void jogo()
 
 }
 
+/**
+ * @brief Aguarda o pressionamento da tecla Enter.
+ *
+ * Essa função aguarda até que o jogador pressione a tecla Enter para continuar.
+ */
 void espera_enter()
 {
   char l;
@@ -159,6 +71,11 @@ void espera_enter()
   tela_atualiza();
 }
 
+/**
+ * @brief Apresenta as instruções do jogo ao jogador.
+ *
+ * Essa função exibe na tela as instruções sobre como jogar o jogo de digitação.
+ */
 void apresentacao()
 {
   tela_limpa();
@@ -210,6 +127,15 @@ void apresentacao()
   espera_enter();
 }
 
+/**
+ * @brief Lê os recordes do jogo e armazena jogador e pontuação.
+ *
+ * Esta função lê o arquivo "recordes.txt" que armazena os recordes do jogo, 
+ * inicializa o vetor de jogadores e a quantidade total de jogadores.
+ *
+ * @param jogadores Vetor de jogadores a ser preenchido.
+ * @param num_jogadores Número total de jogadores (atualizado pela função).
+ */
 void le_recordes(Jogador* jogadores, int *num_jogadores)
 {
   FILE *arquivo;
@@ -239,6 +165,15 @@ void le_recordes(Jogador* jogadores, int *num_jogadores)
   fclose(arquivo);
 }
 
+/**
+ * @brief Realiza as ações de encerramento do jogo.
+ *
+ * Esta função exibe mensagens de acordo com o resultado do jogo (vitória ou derrota),
+ * mostra a pontuação total do jogador e aguarda a tecla Enter para prosseguir.
+ *
+ * @param n_palavra Número de palavras restantes.
+ * @param pontos Pontuação total do jogador.
+ */
 void encerramento(int n_palavra, int pontos)
 {
   tela_limpa();
@@ -266,6 +201,15 @@ void encerramento(int n_palavra, int pontos)
   espera_enter();
 }
 
+/**
+ * @brief Pergunta ao jogador se ele deseja jogar novamente.
+ *
+ * Esta função exibe uma mensagem para o jogador indicando que ele pode digitar 's' para jogar
+ * novamente ou 'n' para sair. A função aguarda a entrada do jogador e retorna true se o jogador
+ * deseja jogar novamente, ou false se deseja sair.
+ *
+ * @return Retorna true se o jogador deseja jogar novamente, false se deseja sair.
+ */
 bool quer_jogar_de_novo()
 {
   tela_limpa();
@@ -288,6 +232,14 @@ bool quer_jogar_de_novo()
   }
 }
 
+/**
+ * @brief Preenche a matriz de palavras a serem usadas no jogo.
+ *
+ * Esta função lê palavras de um arquivo chamado "palavras" e preenche a matriz de palavras.
+ * Cada palavra é lida aleatoriamente do arquivo, garantindo que não seja repetida.
+ *
+ * @param palavras Matriz de Palavra a ser preenchida.
+ */
 void preenche_palavras(Palavra *palavras)
 {
   int linha_atual = 1, qtde_palavras_add = 0;
@@ -348,6 +300,15 @@ void preenche_palavras(Palavra *palavras)
 	fclose(arquivo);
 }
 
+/**
+ * @brief Seleciona uma palavra com base na primeira letra e no tempo de ativação.
+ *
+ * @param palavras Array de palavras disponíveis.
+ * @param n_palavras Número total de palavras.
+ * @param l Primeira letra da palavra desejada.
+ * @param inicio Tempo de início do jogo.
+ * @return Retorna a posição da palavra selecionada no array ou -1 se nenhuma palavra for selecionada.
+ */
 int seleciona_palavra(Palavra *palavras, int n_palavras, char l, double inicio)
 {
   int menor_tempo_ativacao = 0;
@@ -366,11 +327,25 @@ int seleciona_palavra(Palavra *palavras, int n_palavras, char l, double inicio)
   return pos;
 }
 
+/**
+ * @brief Verifica se a letra fornecida é a primeira letra da palavra selecionada.
+ *
+ * @param palavras Array de palavras.
+ * @param p_sel Posição da palavra selecionada.
+ * @param letra Letra fornecida.
+ * @return Retorna true se a letra corresponder à primeira letra da palavra selecionada, false caso contrário.
+ */
 bool acha_letra(Palavra *palavras, int p_sel, char letra)
 {
   return palavras[p_sel].palavra[0] == letra;
 }
 
+/**
+ * @brief Remove a primeira letra da palavra selecionada.
+ *
+ * @param palavras Array de palavras.
+ * @param p_sel Posição da palavra selecionada.
+ */
 void remove_pos(Palavra *palavras, int p_sel)
 {
   int i = 0;
@@ -380,6 +355,12 @@ void remove_pos(Palavra *palavras, int p_sel)
   }
 }
 
+/**
+ * @brief Remove a palavra selecionada do array de palavras.
+ *
+ * @param palavras Array de palavras.
+ * @param p_sel Posição da palavra selecionada.
+ */
 void remove_palavra(Palavra *palavras, int p_sel)
 {
   Palavra aux;
@@ -396,6 +377,13 @@ void remove_palavra(Palavra *palavras, int p_sel)
   }
 }
 
+/**
+ * @brief Verifica se a palavra selecionada foi completamente digitada.
+ *
+ * @param palavras Array de palavras.
+ * @param p_sel Posição da palavra selecionada.
+ * @return Retorna true se a palavra foi completamente digitada, false caso contrário.
+ */
 bool palavra_selecionada_terminou(Palavra *palavras,int p_sel)
 {
   if (p_sel != -1 && palavras[p_sel].palavra[0] == '\0') {
@@ -405,6 +393,14 @@ bool palavra_selecionada_terminou(Palavra *palavras,int p_sel)
   }
 }
 
+/**
+ * @brief Verifica se o caractere fornecido é uma letra válida.
+ *
+ * Um caractere é válido se for de a-z ou A-Z sem acentos e/ou caracteres especiais.
+ * 
+ * @param l Caractere fornecido.
+ * @return Retorna true se o caractere for uma letra válida, false caso contrário.
+ */
 bool caractere_valido(char l)
 {
 	if((l >= 'A' && l <= 'Z') || (l >= 'a' && l <= 'z')) {
@@ -414,6 +410,12 @@ bool caractere_valido(char l)
   }
 }
 
+/**
+ * @brief Converte um caractere para minúsculo, se for uma letra maiúscula.
+ *
+ * @param l Caractere fornecido.
+ * @return Retorna o caractere convertido para minúsculo, se for uma letra maiúscula; caso contrário, retorna o caractere original.
+ */
 char converte_caractere(char l)
 {
 	if (l >= 'A' && l <= 'Z') {
@@ -423,6 +425,15 @@ char converte_caractere(char l)
   }
 }
 
+/**
+ * @brief Verifica se um número já foi sorteado.
+ *
+ * Cada palavra é representada por um numero, essa funcao serve para garantir que uma palavra não seja repetida.
+ * 
+ * @param num Número a ser verificado.
+ * @param vet Vetor de números já sorteados.
+ * @return Retorna true se o número já foi sorteado, false caso contrário.
+ */
 bool numero_jah_sorteado(int num, int vet[N_PALAVRAS])
 {
 	for (int i = 0;  i < N_PALAVRAS; i++) {
@@ -433,6 +444,16 @@ bool numero_jah_sorteado(int num, int vet[N_PALAVRAS])
 	return false;
 }
 
+/**
+ * @brief Processa a entrada do jogador, atualizando o estado do jogo.
+ *
+ * @param palavras Array de palavras.
+ * @param p_selecionada Posição da palavra selecionada.
+ * @param n_palavras Número de palavras restantes.
+ * @param pontos Pontuação do jogador.
+ * @param inicio Tempo de início do jogo.
+ * @param tempo_ultima_letra Tempo da última letra digitada.
+ */
 void processa_entrada(Palavra *palavras, int *p_selecionada, int *n_palavras, int *pontos, double inicio, double *tempo_ultima_letra)
 {
   //Se já terminou a palavra selecionada
@@ -471,6 +492,11 @@ void processa_entrada(Palavra *palavras, int *p_selecionada, int *n_palavras, in
   } 
 }
 
+/**
+ * @brief Preenche as posições horizontais das palavras no array.
+ *
+ * @param palavras Array de palavras.
+ */
 void preenche_pos_horizontal(Palavra *palavras)
 {
   for (int i = 0; i < N_PALAVRAS; i++) {
@@ -478,6 +504,11 @@ void preenche_pos_horizontal(Palavra *palavras)
   } 
 }
 
+/**
+ * @brief Preenche as horas de ativação das palavras no array.
+ *
+ * @param palavras Array de palavras.
+ */
 void preenche_hora_ativacao(Palavra *palavras)
 {
   for (int i = 0; i < N_PALAVRAS; i++) {
@@ -485,6 +516,11 @@ void preenche_hora_ativacao(Palavra *palavras)
   } 
 }
 
+/**
+ * @brief Preenche os tempos de digitação das palavras no array.
+ *
+ * @param palavras Array de palavras.
+ */
 void preenche_tempo_digitacao(Palavra *palavras)
 {
   for (int i = 0; i < N_PALAVRAS; i++) {
@@ -492,6 +528,15 @@ void preenche_tempo_digitacao(Palavra *palavras)
   } 
 }
 
+/**
+ * @brief Desenha a tela do jogo com as palavras, pontuação e informações relevantes.
+ *
+ * @param palavras Array de palavras.
+ * @param n_palavra Número de palavras restantes.
+ * @param p_selecionada Posição da palavra selecionada.
+ * @param pontos Pontuação do jogador.
+ * @param inicio Tempo de início do jogo.
+ */
 void desenha_tela(Palavra *palavras, int n_palavra, int p_selecionada, int pontos, double inicio)
 {
   int i = 0, k = 0, lin = 0, col = 0, l_ini, alt, t_ativa;
@@ -552,6 +597,12 @@ void desenha_tela(Palavra *palavras, int n_palavra, int p_selecionada, int ponto
 
 }
 
+/**
+ * @brief Calcula o tamanho de uma palavra.
+ *
+ * @param palavra Palavra fornecida.
+ * @return Retorna o tamanho da palavra.
+ */
 int tam_palavra(char palavra[N_LETRA])
 {
   int i = 0;
@@ -561,6 +612,14 @@ int tam_palavra(char palavra[N_LETRA])
   return i--;
 }
 
+/**
+ * @brief Verifica se o tempo de digitação de alguma palavra expirou.
+ *
+ * @param palavras Array de palavras.
+ * @param inicio Tempo de início do jogo.
+ * @param n_palavra Número de palavras restantes.
+ * @return Retorna true se o tempo de digitação de alguma palavra expirou, false caso contrário.
+ */
 bool tempo_digitacao_expirou(Palavra *palavras, double inicio, int n_palavra)
 {
   for (int i = 0;  i < n_palavra; i++) {
@@ -571,6 +630,13 @@ bool tempo_digitacao_expirou(Palavra *palavras, double inicio, int n_palavra)
   return false;
 }
 
+/**
+ * @brief Atualiza o arquivo de recordes com a pontuação do jogador, se for uma das três melhores.
+ *
+ * @param jogadores Array de jogadores.
+ * @param num_jogadores Número de jogadores no array.
+ * @param pontos Pontuação do jogador.
+ */
 void atualiza_recordes(Jogador* jogadores, int num_jogadores, int pontos)
 {
 
@@ -664,6 +730,9 @@ void atualiza_recordes(Jogador* jogadores, int num_jogadores, int pontos)
   fclose(arquivo);
 }
 
+/**
+ * @brief Mostra os recordes do jogo na tela.
+ */
 void mostra_recordes()
 {
   FILE *arquivo;
@@ -706,6 +775,14 @@ void mostra_recordes()
   fclose(arquivo);
 }
 
+/**
+ * @brief Verifica se a pontuação do jogador está entre as três melhores.
+ *
+ * @param jogadores Array de jogadores.
+ * @param num_jogadores Número de jogadores no array.
+ * @param pontos Pontuação do jogador.
+ * @return Retorna true se a pontuação estiver entre as três melhores, false caso contrário.
+ */
 bool pontuacao_top3(Jogador* jogadores, int num_jogadores, int pontos)
 {
   if (num_jogadores < MAX_JOGADORES) {

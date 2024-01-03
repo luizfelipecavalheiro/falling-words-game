@@ -1,5 +1,15 @@
+/**
+ * @file tela.c
+ * 
+ * @brief Implementação das funções da tela do jogo.
+ * 
+ * @author Benhur Stein
+ */
+
 #include "tela.h"
 #define _POSIX_C_SOURCE 200809L
+
+
 // implementado usando
 //   - sequências de escape ANSI para controlar a saída (cursor, cores)
 //   - ioctl para descobrir o tamanho do terminal

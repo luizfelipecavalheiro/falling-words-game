@@ -1,7 +1,16 @@
+/**
+ * @file tecla.c
+ * 
+ * @brief Implementacao das funções de tecla do jogo.
+ * 
+ * @author Benhur Stein
+ */
+
 #include "tecla.h"
 
 #include <termios.h>
 #include <unistd.h>
+
 
 // variável global para guardar a configuração original do
 //   teclado

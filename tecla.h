@@ -1,5 +1,14 @@
+/**
+ * @file tecla.h
+ * 
+ * @brief Definição das funções de tecla do jogo.
+ * 
+ * @author Benhur Stein
+ */
+
 #ifndef TECLA_H
 #define TECLA_H
+
 
 // muda o processamento de caracteres de entrada pelo terminal
 //   para que a leitura seja feita em caracteres individuais, sem esperar

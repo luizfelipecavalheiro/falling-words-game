@@ -1,7 +1,10 @@
-// tela.h
-// ------
-// funções para controlar a impressão no terminal
-//
+/**
+ * @file tela.h
+ * 
+ * @brief Definição das funções da tela do jogo.
+ * 
+ * @author Benhur Stein
+ */
 
 #ifndef TELA_H
 #define TELA_H
