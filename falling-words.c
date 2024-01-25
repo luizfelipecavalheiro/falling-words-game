@@ -9,7 +9,7 @@
  * @author Luiz Felipe Cavalheiro
  *
  * @note Para rodar o jogo, digite: gcc falling-words.c funcoes.c tela.c tecla.c -o falling-words -lm && ./falling-words
- *       ou então digite 'make run' no terminal, após a executar digite 'make clean' para excluir os arquivos objeto
+ *       ou então para jogar em ambiente Linux digite: 'make run clean' no mingw32 digite: 'mingw32-make run clean'
  */
 
 #include "funcoes.h"
