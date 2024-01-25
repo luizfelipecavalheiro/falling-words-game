@@ -1,8 +1,6 @@
 CC = gcc
 CFLAGS = -lm
 
-DEPS = tecla.h tela.h
-
 all: falling-words
 
 falling-words: falling-words.o funcoes.o tela.o tecla.o
@@ -19,6 +17,9 @@ tela.o: tela.c tela.h
 
 tecla.o: tecla.c tecla.h
 	$(CC) $(CFLAGS) -c tecla.c
+
+run: falling-words
+	./falling-words
 
 clean:
 	rm -f falling-words.o funcoes.o tela.o tecla.o falling-words
